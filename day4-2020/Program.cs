@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿// happy that I could try out pattern matching here
+
+using System.Text.RegularExpressions;
 using aoclib;
 
 // split on double \n to split on blank line between passports
@@ -22,7 +24,7 @@ foreach (var passport in passports)
     // Split() without arg splits on all whitespace, which is what we need for multi-line passports
     // https://stackoverflow.com/a/6111355/532513
     var fields = passport.Split().Select(elem => elem.Split(":")[0]);
-    // this works on lists or hashsets, or even a mix of them.
+    // Intersect works on lists or hashsets, or even a mix of them.
     // https://stackoverflow.com/a/3274816/532513
     if (requiredFieldsHashSet.Intersect(fields).Count() == requiredFields.Count()) validPassports++;
 }
@@ -74,6 +76,6 @@ bool CheckValid(string[] fv)
         // hence the need for ^ and $ 
         "pid" => new Regex(@"^[0-9]{9}$").IsMatch(val),
         "cid" => true,
-        _ => throw new ArgumentException("Invalid field name", fv[0]),
+        _ => throw new ArgumentException("Invalid field name", field),
     };
 }
