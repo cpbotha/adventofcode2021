@@ -4,7 +4,7 @@ using aoclib;
 // only doing part 1 because part 2 is just another nested loop
 // only interesting thing is using params as in encse's solution
 
-var lines = Bleh.GetTrimmedInput(@"input.txt").Split("\n");
+var lines = Utils.GetTrimmedInput(@"input.txt").Split("\n");
 //var lines = File.ReadLines(@"input.txt").Where(l => l != "").ToList();
 var numrows = lines.Length;
 var numcols = lines[0].Length;

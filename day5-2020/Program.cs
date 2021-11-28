@@ -1,6 +1,6 @@
 ﻿using aoclib;
 
-var boardingPasses = Bleh.GetTrimmedInput(@"input.txt").Split("\n");
+var boardingPasses = Utils.GetTrimmedInput(@"input.txt").Split("\n");
 
 // we're going to need this again, so materialise
 var allIds = boardingPasses.Select(GetSeatId).ToHashSet();

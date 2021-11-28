@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using aoclib;
 
 // split on double \n to split on blank line between passports
-var passports = Bleh.GetTrimmedInput(@"input.txt").Split("\n\n");
+var passports = Utils.GetTrimmedInput(@"input.txt").Split("\n\n");
 
 string[] requiredFields = {
     "byr",
