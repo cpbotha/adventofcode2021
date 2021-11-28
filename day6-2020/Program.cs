@@ -18,13 +18,13 @@ foreach (var group in groups)
     var numPeople = group.Split().Length;
     // for each group, count the number of characters (questions) with count == num_newlines (answered by all group members)
     // (x.Key, x.Count)
-    totalGroupConsensusAnswers += group.GroupBy(x => x).Where(x => x.Key != '\n' && x.Count() == numPeople).Count();
+    totalGroupConsensusAnswers += group.GroupBy(x => x).Count(x => x.Key != '\n' && x.Count() == numPeople);
 }
 
 // version 2: yes, you can stuff it all into a LINQ query
 var totalGroupConsensusAnswers2 = groups.Select(
     // project the count of consensus answers of the group
-    group => group.GroupBy(x => x).Where(x => x.Key != '\n' && x.Count() == group.Split().Length).Count()
+    group => group.GroupBy(x => x).Count(x => x.Key != '\n' && x.Count() == group.Split().Length)
 ).Sum(); // add 'em all up
 
-Console.WriteLine($"Part 2 answer sum of all questions answered by group consensus: {totalGroupConsensusAnswers2}");
+Console.WriteLine($"Part 2 answer sum of all questions answered by group consensus: {totalGroupConsensusAnswers} == {totalGroupConsensusAnswers2}");
