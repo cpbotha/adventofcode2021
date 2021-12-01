@@ -34,3 +34,10 @@ var summedDepth = numbers.Zip(numbers.Skip(1), numbers.Skip(2)).Select((x) => x.
 // zip the rolling sum with a shifted version of itself to calculate the depth gradient
 var numDeeper2V2 = summedDepth.Zip(summedDepth.Skip(1), (current, next) => next - current).Count(e => e > 0);
 Console.WriteLine($"p2 v2: {numDeeper2V2}");
+
+// Ross MacArthur lets us know that you don't even need to sum in part 2!
+// (b + c + d) - (a + b + c) is the same as d - a
+// so if i+3th > i that means the group is deeper
+// in other words:
+Console.WriteLine($"p2 v3: {numbers.Zip(numbers.Skip(3), (current, next) => next - current).Count(e => e > 0)}");
+
