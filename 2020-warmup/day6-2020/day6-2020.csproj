@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\aoclib\aoclib.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>day5_2020</RootNamespace>
+    <RootNamespace>day6_2020</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\aoclib\aoclib.csproj" />
-    </ItemGroup>
 
 </Project>
