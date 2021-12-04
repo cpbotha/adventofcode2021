@@ -7,10 +7,6 @@
 using System.Text.RegularExpressions;
 using aoclib;
 
-// - find all boards with num
-// - mark num everywhere
-// - on all boards that have been marked, search for rows / columns
-
 var lines = Utils.GetTrimmedInput(@"input.txt").Split("\n\n");
 // first line with numbers that are called out
 var nums = lines.First().Split(',').Select(int.Parse);
@@ -20,23 +16,26 @@ var nums = lines.First().Split(',').Select(int.Parse);
 var rx = new Regex(@"\s+", RegexOptions.Compiled);
 var boards = lines.Skip(1).Select(bt => rx.Split(bt.Trim()).Select(int.Parse).ToList()).ToList();
 
-// this matches boards (initialised to 0 thanks)
+// multi-dimensional array:
 //int[,] masks = new int[boards.Count, 25];
+// went for jagged arrays so I can get out the mask matching a specific board
 int[][] masks = new int[boards.Count][];
 for (var bi = 0; bi < boards.Count; bi++)
 {
     masks[bi] = new int[25];
 }
 
-
+// before I realised that I can ignore boards that have won, I kept track of the called rows / columns
 // board, 0 for row / 1 for col, rowOrCol
 // var called = new HashSet < (int,int,int) >();
+// now just keep track of boards that are not part of the fun anymore
 var boardsWon = new HashSet<int>();
 foreach (var num in nums)
 {
     // update all boards with this called number
     for (var bi = 0; bi < boards.Count; bi++)
     {
+        if (boardsWon.Contains(bi)) continue;
         var board = boards[bi];
         var mask = masks[bi];
         // find num in board
@@ -48,8 +47,6 @@ foreach (var num in nums)
                 mask[ei] = 1;
             }
         }
-        
-
     }
 
     // now scan all boards that have not yet won for a row or column
@@ -71,7 +68,6 @@ foreach (var num in nums)
             Console.WriteLine($"{num}, board {bi}, row {bingoRR.ri}, {sum}, {num * sum}");                    
         } 
 
-        // part 2: even if we have just called out a row, we should also find columns?
         if (bingoRR == null)
         {
             for (int ci = 0; ci < 5; ci++)
@@ -87,7 +83,6 @@ foreach (var num in nums)
                 }
             }
         }
-        
     }
 }
 
