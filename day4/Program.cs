@@ -1,3 +1,5 @@
+// this was the opposite of fun for me
+
 using System.Text.RegularExpressions;
 using aoclib;
 
@@ -6,6 +8,7 @@ using aoclib;
 // - on all boards that have been marked, search for rows / columns
 
 var lines = Utils.GetTrimmedInput(@"input.txt").Split("\n\n");
+// first line with numbers that are called out
 var nums = lines.First().Split(',').Select(int.Parse);
 
 // string.Split() will give you empty elements, i.e. although it splits on space or \n, it does not merge them (empty elems)
@@ -23,6 +26,9 @@ for (var bi = 0; bi < boards.Count; bi++)
 
 bool bingo = false;
 
+// board, 0 for row / 1 for col, rowOrCol
+var called = new HashSet < (int,int,int) >();
+var boardsWon = new HashSet<int>();
 foreach (var num in nums)
 {
     for (var bi = 0; bi < boards.Count; bi++)
@@ -39,40 +45,64 @@ foreach (var num in nums)
             }
         }
         
+
+    }
+
+    // for part 2, we do this AFTER we have updated the mask
+    for (var bi = 0; bi < boards.Count(); bi++)
+    {
+        var board = boards[bi];
+        var mask = masks[bi];
+        
         // check board for bingo via mask
         // first find row with 5
-        var bingoR = mask.Chunk(5).Select((c, ri) => new { c, ri }).FirstOrDefault(pair => pair.c.Sum() == 5);
+        var bingoRR = mask.Chunk(5).Select((c, ri) => new { c, ri }).FirstOrDefault(pair => pair.c.Sum() == 5);
 
+        if (bingoRR != null)
+        {
+            var t = (bi, 0, bingoRR.ri);
+            if (!called.Contains(t))
+            {
+                called.Add(t);
+                if (!boardsWon.Contains(bi))
+                {
+                    boardsWon.Add(bi);
+                    var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
+                    Console.WriteLine($"{num}, board {bi}, row {bingoRR.ri}, {sum}, {num * sum}");                    
+                }
+
+            }
+        } 
 
         // find first column with 5
-        bool bingoC = false;
+        int bingoC = -1;
 
-        if (bingoR == null)
+        // part 2: even if we have just called out a row, we should also find columns?
+        if (bingoRR == null)
         {
             for (int ci = 0; ci < 5; ci++)
             {
                 if (mask.Skip(ci).Where((x, i) => i % 5 == 0).Sum() == 5)
                 {
-                    bingoC = true;
+                    bingoC = ci;
+                    
+                    var t = (bi, 1, ci);
+                    if (!called.Contains(t))
+                    {
+                        called.Add(t);
+                        if (!boardsWon.Contains(bi))
+                        {
+                            boardsWon.Add(bi);
+                            var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
+                            Console.WriteLine($"{num}, board {bi}, col {ci}, {sum}, {num * sum}");
+                        }
+                    }                    
+                    
                     break;
                 }
             }
         }
-
-        // if R or C, stop right here and spit out the answer
-        if (bingoC || bingoR != null)
-        {
-            // 1. sum of all unmarked numbers
-            var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
-            Console.WriteLine($"{sum}, {num * sum}");
-            bingo = true;
-            break;
-
-        }
-
+        
     }
-
-    if (bingo) break;
 }
-
 
