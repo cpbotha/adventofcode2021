@@ -1,5 +1,9 @@
 // this was the opposite of fun for me
 
+// What I learned (often much too late)
+// - once ANY row or column on a board has been found, that board has "won" and you should calculate the checksum.
+//   you can now forget about that board!
+
 using System.Text.RegularExpressions;
 using aoclib;
 
@@ -24,13 +28,13 @@ for (var bi = 0; bi < boards.Count; bi++)
     masks[bi] = new int[25];
 }
 
-bool bingo = false;
 
 // board, 0 for row / 1 for col, rowOrCol
-var called = new HashSet < (int,int,int) >();
+// var called = new HashSet < (int,int,int) >();
 var boardsWon = new HashSet<int>();
 foreach (var num in nums)
 {
+    // update all boards with this called number
     for (var bi = 0; bi < boards.Count; bi++)
     {
         var board = boards[bi];
@@ -48,9 +52,11 @@ foreach (var num in nums)
 
     }
 
-    // for part 2, we do this AFTER we have updated the mask
+    // now scan all boards that have not yet won for a row or column
     for (var bi = 0; bi < boards.Count(); bi++)
     {
+        // we ignore boards that have already won
+        if (boardsWon.Contains(bi)) continue;
         var board = boards[bi];
         var mask = masks[bi];
         
@@ -60,22 +66,10 @@ foreach (var num in nums)
 
         if (bingoRR != null)
         {
-            var t = (bi, 0, bingoRR.ri);
-            if (!called.Contains(t))
-            {
-                called.Add(t);
-                if (!boardsWon.Contains(bi))
-                {
-                    boardsWon.Add(bi);
-                    var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
-                    Console.WriteLine($"{num}, board {bi}, row {bingoRR.ri}, {sum}, {num * sum}");                    
-                }
-
-            }
+            boardsWon.Add(bi);
+            var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
+            Console.WriteLine($"{num}, board {bi}, row {bingoRR.ri}, {sum}, {num * sum}");                    
         } 
-
-        // find first column with 5
-        int bingoC = -1;
 
         // part 2: even if we have just called out a row, we should also find columns?
         if (bingoRR == null)
@@ -84,20 +78,11 @@ foreach (var num in nums)
             {
                 if (mask.Skip(ci).Where((x, i) => i % 5 == 0).Sum() == 5)
                 {
-                    bingoC = ci;
+                    boardsWon.Add(bi);
+                    var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
+                    Console.WriteLine($"{num}, board {bi}, col {ci}, {sum}, {num * sum}");
                     
-                    var t = (bi, 1, ci);
-                    if (!called.Contains(t))
-                    {
-                        called.Add(t);
-                        if (!boardsWon.Contains(bi))
-                        {
-                            boardsWon.Add(bi);
-                            var sum = board.Zip(mask).Where(bm => bm.Second == 0).Select(bm => bm.First).Sum();
-                            Console.WriteLine($"{num}, board {bi}, col {ci}, {sum}, {num * sum}");
-                        }
-                    }                    
-                    
+                    // we found a bingo column, so we can stop
                     break;
                 }
             }
