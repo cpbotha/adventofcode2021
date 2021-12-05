@@ -19,17 +19,19 @@ int[] field = new int[height * width];
 
 foreach (var ftc in ftCoords)
 {
+    // unpack the from-to-coords tuple into from and to
+    var (f, t) = ftc;
     // part 1 all lines are straight, so we're either going to paint a row or a column
     // ARGH: in part 1, you actually have to throw out the diagonal lines
-    if (part1 && !(ftc.Item1.x == ftc.Item2.x || ftc.Item1.y == ftc.Item2.y)) continue;
+    if (part1 && !(f.x == t.x || f.y == t.y)) continue;
 
-    var ydir = Math.Sign(ftc.Item2.y - ftc.Item1.y);
-    var xdir = Math.Sign(ftc.Item2.x - ftc.Item1.x);
+    var ydir = Math.Sign(t.y - f.y);
+    var xdir = Math.Sign(t.x - f.x);
 
-    for (var pos = (ftc.Item1.x, ftc.Item1.y);;)
+    for (var pos = (f.x, f.y);;)
     {
         field[pos.y * width + pos.x] += 1;
-        if (pos.x == ftc.Item2.x && pos.y == ftc.Item2.y) break;
+        if (pos.x == t.x && pos.y == t.y) break;
         pos.x += xdir;
         pos.y += ydir;
     };
