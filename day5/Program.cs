@@ -18,18 +18,20 @@ int[] field = new int[height * width];
 foreach (var ftc in ftCoords)
 {
     // part 1 all lines are straight, so we're either going to paint a row or a column
-    // ARGH: you should actually check if the line is straight!
-    if (!(ftc.Item1.x == ftc.Item2.x || ftc.Item1.y == ftc.Item2.y)) continue;
+    // ARGH: in part 1, you should actually check if the line is straight and throw it out if your code does not yet do diag doh.
+    //if (!(ftc.Item1.x == ftc.Item2.x || ftc.Item1.y == ftc.Item2.y)) continue;
 
-    for (var y = Math.Min(ftc.Item1.y, ftc.Item2.y); y <= Math.Max(ftc.Item1.y, ftc.Item2.y); y++)
+    var ydir = Math.Sign(ftc.Item2.y - ftc.Item1.y);
+    var xdir = Math.Sign(ftc.Item2.x - ftc.Item1.x);
+
+    for (var pos = (ftc.Item1.x, ftc.Item1.y);;)
     {
-        for (var x = Math.Min(ftc.Item1.x, ftc.Item2.x); x <= Math.Max(ftc.Item1.x, ftc.Item2.x); x++)
-        {
-            field[y * width + x] += 1;
-        }
-        
-    }
-    
+        field[pos.y * width + pos.x] += 1;
+        if (pos.x == ftc.Item2.x && pos.y == ftc.Item2.y) break;
+        pos.x += xdir;
+        pos.y += ydir;
+    };
+
     //PrintField(field);
     //Console.WriteLine("brle");
 }
