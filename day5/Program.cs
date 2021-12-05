@@ -1,5 +1,7 @@
 using aoclib;
 
+var part1 = false;
+
 var ftCoords = Utils.GetTrimmedInput(@"input.txt")
     .Split("\n")
     .Select(l => l.Split(" -> "))
@@ -18,8 +20,8 @@ int[] field = new int[height * width];
 foreach (var ftc in ftCoords)
 {
     // part 1 all lines are straight, so we're either going to paint a row or a column
-    // ARGH: in part 1, you should actually check if the line is straight and throw it out if your code does not yet do diag doh.
-    //if (!(ftc.Item1.x == ftc.Item2.x || ftc.Item1.y == ftc.Item2.y)) continue;
+    // ARGH: in part 1, you actually have to throw out the diagonal lines
+    if (part1 && !(ftc.Item1.x == ftc.Item2.x || ftc.Item1.y == ftc.Item2.y)) continue;
 
     var ydir = Math.Sign(ftc.Item2.y - ftc.Item1.y);
     var xdir = Math.Sign(ftc.Item2.x - ftc.Item1.x);
@@ -39,8 +41,8 @@ foreach (var ftc in ftCoords)
 //PrintField(field);
 
 var numDangerousAreas = field.Count(x => x >= 2);
-
-Console.WriteLine($"part 1: {numDangerousAreas}");
+var p2q = part1 ? "part 1, straight only" : "part 2, diagonal included";
+Console.WriteLine($"number of positions with >=2 crossings: {numDangerousAreas} ({p2q})");
 
 void PrintField(int[] field)
 {
