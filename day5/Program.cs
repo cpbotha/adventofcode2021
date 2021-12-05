@@ -1,0 +1,59 @@
+using aoclib;
+
+var ftCoords = Utils.GetTrimmedInput(@"input.txt")
+    .Split("\n")
+    .Select(l => l.Split(" -> "))
+    .Select(ft => (ParsePair(ft[0]), ParsePair(ft[1]))).ToList();
+
+var maxY = ftCoords.Select(ftc => Math.Max(ftc.Item1.y, ftc.Item2.y)).Max();
+var maxX = ftCoords.Select(ftc => Math.Max(ftc.Item1.x, ftc.Item2.x)).Max();
+int height = maxY + 1;
+int width = maxX + 1;
+
+// again I can't use a two-dim array:
+// https://stackoverflow.com/questions/275073/why-do-c-sharp-multidimensional-arrays-not-implement-ienumerablet
+//int[,] field = new int[maxR, maxC];
+int[] field = new int[height * width];
+
+foreach (var ftc in ftCoords)
+{
+    // part 1 all lines are straight, so we're either going to paint a row or a column
+    // ARGH: you should actually check if the line is straight!
+    if (!(ftc.Item1.x == ftc.Item2.x || ftc.Item1.y == ftc.Item2.y)) continue;
+
+    for (var y = Math.Min(ftc.Item1.y, ftc.Item2.y); y <= Math.Max(ftc.Item1.y, ftc.Item2.y); y++)
+    {
+        for (var x = Math.Min(ftc.Item1.x, ftc.Item2.x); x <= Math.Max(ftc.Item1.x, ftc.Item2.x); x++)
+        {
+            field[y * width + x] += 1;
+        }
+        
+    }
+    
+    //PrintField(field);
+    //Console.WriteLine("brle");
+}
+
+//PrintField(field);
+
+var numDangerousAreas = field.Count(x => x >= 2);
+
+Console.WriteLine($"part 1: {numDangerousAreas}");
+
+void PrintField(int[] field)
+{
+    for (int y1 = 0; y1 < height; y1++)
+    {
+        Console.WriteLine(string.Join( " ", field[(y1*width) .. (y1*width+width)]));
+    }
+}
+
+// part 1: at how many points do at least 2 lines overlap?
+Coord ParsePair(string pair)
+{
+    var pairC = pair.Split(',').Select(int.Parse).ToList();
+    return new Coord(pairC[0], pairC[1]);
+}
+
+readonly record struct Coord(int x, int y);
+    
