@@ -1,10 +1,12 @@
 using aoclib;
+
 var numbers = Utils.GetTrimmedInput(@"input.txt").Split(",").Select(int.Parse).ToList();
 
 Console.WriteLine(numbers.Sum() / numbers.Count);
 numbers.Sort();
 
-// doing part 1 late; I heard something about means and medians so taking a chance:
+// doing part 1 late; in spite of avoiding the usual channels today, I heard
+// something about means and medians so taking a chance:
 // numbers.Count is even (1000), so median is just Count / 2
 var median = numbers[numbers.Count / 2];
 
@@ -32,5 +34,3 @@ var bleh = Enumerable.Range(median, numbers.Max()).Select(cand => new
 }).MinBy(thing => thing.fuel); // and finally just pick the candidate position with the lowest fuel
 
 Console.WriteLine(bleh);
-
- 
