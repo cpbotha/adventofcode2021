@@ -23,13 +23,13 @@ Console.WriteLine($"part 1 fuel required: {fuel}");
 // for each candidate sweetspot "cand"
 var bleh = Enumerable.Range(median, numbers.Max()).Select(cand => new
 {
-    // calculate the fuel using the nth triangle number thingy
+    // calculate the total fuel for this candidate using the nth triangle number thingy
     cand, fuel = numbers.Select(num =>
     {
         var d = Math.Abs(num - cand);
         return d * (d + 1) / 2;
     }).Sum()
-}).MinBy(thing => thing.fuel); // and finally just pick the anonymous object with the lowest fuel
+}).MinBy(thing => thing.fuel); // and finally just pick the candidate position with the lowest fuel
 
 Console.WriteLine(bleh);
 
